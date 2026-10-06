@@ -1,0 +1,16 @@
+# Python
+venv/
+ui-tests/venv/
+__pycache__/
+*.py[cod]
+
+# Pytest
+.pytest_cache/
+
+# IDE
+.idea/
+.vscode/
+
+# Reports generated locally
+reports/*.html
+reports/*.xml
