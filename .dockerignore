@@ -1,0 +1,12 @@
+.git
+.gitignore
+
+venv
+ui-tests/venv
+__pycache__
+.pytest_cache
+
+reports
+security
+
+JMeter/*.log
