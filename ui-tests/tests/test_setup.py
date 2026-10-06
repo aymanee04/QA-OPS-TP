@@ -1,9 +1,6 @@
 from selenium import webdriver
 
-def test_open_browser():
-    driver = webdriver.Chrome()
+def test_open_browser(driver):
     driver.get("https://formy-project.herokuapp.com/")
-    print(driver.title)
+
     assert "Formy" in driver.title
-    
-    driver.quit()
