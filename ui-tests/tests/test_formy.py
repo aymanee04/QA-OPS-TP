@@ -1,5 +1,6 @@
 from pages.formy_page import FormyPage
 from selenium.webdriver.support.ui import Select
+from selenium.webdriver.common.by import By
 
 
 def test_formy_homepage(driver):
@@ -54,3 +55,31 @@ def test_dropdown(driver):
     ).first_selected_option
 
     assert selected.text == "0-1"
+
+def test_alert(driver):
+    page = FormyPage(driver)
+
+    page.open_alert()
+    page.trigger_alert()
+
+    alert = driver.switch_to.alert
+
+    assert "Hello! I am an alert box!" in alert.text
+
+    alert.accept()
+
+
+def test_iframe(driver):
+    page = FormyPage(driver)
+
+    page.open_iframe()
+
+    iframe = driver.find_element(*page.IFRAME)
+    driver.switch_to.frame(iframe)
+
+    name_input = driver.find_element(By.ID, "name")
+    name_input.send_keys("Aymane Jemmaa")
+
+    assert name_input.get_attribute("value") == "Aymane Jemmaa"
+
+    driver.switch_to.default_content()

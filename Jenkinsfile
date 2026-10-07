@@ -26,6 +26,7 @@ pipeline {
                     chromium --version || true
                     chromedriver --version || true
                     newman --version
+                    allure --version
                 '''
             }
         }
@@ -48,11 +49,26 @@ pipeline {
                 sh '''
                     . .jenkins-venv/bin/activate
 
+                    rm -rf ${REPORTS_DIR}/allure-results
+                    mkdir -p ${REPORTS_DIR}/allure-results
+
                     PYTHONPATH=ui-tests \
                     pytest ui-tests/tests \
                     -v \
-                    --junitxml=${REPORTS_DIR}/ui-tests.xml
+                    --junitxml=${REPORTS_DIR}/ui-tests.xml \
+                    --alluredir=${REPORTS_DIR}/allure-results
                 '''
+            }
+        }
+
+        stage('Generate Allure Report') {
+            steps {
+            sh '''
+            allure generate \
+                ${REPORTS_DIR}/allure-results \
+                -o ${REPORTS_DIR}/allure-html \
+                --clean
+        '''
             }
         }
 
@@ -67,40 +83,52 @@ pipeline {
         }
     }
 
+
     post {
 
-        always {
-            echo "Publishing test reports..."
+    always {
+        echo "Publishing test reports..."
 
-            junit(
-                allowEmptyResults: true,
-                testResults: 'reports/*.xml'
-            )
+        junit(
+            allowEmptyResults: true,
+            testResults: 'reports/*.xml'
+        )
 
-            archiveArtifacts(
-                artifacts: 'reports/*.xml',
-                allowEmptyArchive: true
-            )
+        archiveArtifacts(
+            artifacts: 'reports/*.xml',
+            allowEmptyArchive: true
+        )
 
-            archiveArtifacts(
-                artifacts: 'security/**/*',
-                allowEmptyArchive: true
-            )
-        }
+        archiveArtifacts(
+            artifacts: 'reports/allure-results/**/*',
+            allowEmptyArchive: true
+        )
 
-        success {
-            echo "========================================"
-            echo " QA OPS PIPELINE PASSED"
-            echo " UI tests: PASSED"
-            echo " API tests: PASSED"
-            echo "========================================"
-        }
+        archiveArtifacts(
+            artifacts: 'reports/allure-html/**/*',
+            allowEmptyArchive: true
+        )
 
-        failure {
-            echo "========================================"
-            echo " QA OPS PIPELINE FAILED"
-            echo " Check the Jenkins console and reports."
-            echo "========================================"
-        }
+        archiveArtifacts(
+            artifacts: 'security/**/*',
+            allowEmptyArchive: true
+        )
     }
+
+    success {
+        echo "========================================"
+        echo " QA OPS PIPELINE PASSED"
+        echo " UI tests: PASSED"
+        echo " API tests: PASSED"
+        echo " Allure report: GENERATED"
+        echo "========================================"
+    }
+
+    failure {
+        echo "========================================"
+        echo " QA OPS PIPELINE FAILED"
+        echo " Check the Jenkins console and reports."
+        echo "========================================"
+    }
+}
 }

@@ -11,6 +11,8 @@ class FormyPage(BasePage):
     HOME_URL = f"{BASE_URL}/"
     FORM_URL = f"{BASE_URL}/form"
     RADIO_URL = f"{BASE_URL}/radiobutton"
+    ALERT_URL = f"{BASE_URL}/alert"
+    IFRAME_URL = f"{BASE_URL}/iframe"
 
     # Form
     FIRST_NAME = (By.ID, "first-name")
@@ -23,6 +25,12 @@ class FormyPage(BasePage):
     # Dropdown
     SELECT_MENU = (By.ID, "select-menu")
 
+    # Alert
+    ALERT_BUTTON = (By.ID, "alert-button")
+
+    # iFrame
+    IFRAME = (By.ID, "frame")
+
     def open_page(self):
         self.open(self.HOME_URL)
 
@@ -34,6 +42,12 @@ class FormyPage(BasePage):
 
     def open_dropdown(self):
         self.open(self.FORM_URL)
+
+    def open_alert(self):
+        self.open(self.ALERT_URL)
+
+    def open_iframe(self):
+        self.open(self.IFRAME_URL)
 
     def enter_first_name(self, value):
         self.write(self.FIRST_NAME, value)
@@ -50,3 +64,6 @@ class FormyPage(BasePage):
     def select_dropdown(self, value):
         element = self.driver.find_element(*self.SELECT_MENU)
         Select(element).select_by_visible_text(value)
+
+    def trigger_alert(self):
+        self.click(self.ALERT_BUTTON)
