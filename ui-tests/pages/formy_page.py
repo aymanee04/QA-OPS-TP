@@ -41,7 +41,7 @@ class FormyPage(BasePage):
         self.open(self.RADIO_URL)
 
     def open_dropdown(self):
-        self.open(self.DROPDOWN_URL)
+        self.open(self.FORM_URL)
 
     def open_alert(self):
         self.open(self.ALERT_URL)
