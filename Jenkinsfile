@@ -63,12 +63,12 @@ pipeline {
 
         stage('Generate Allure Report') {
             steps {
-            sh '''
-            allure generate \
+                sh '''
+                allure generate \
                 ${REPORTS_DIR}/allure-results \
                 -o ${REPORTS_DIR}/allure-html \
                 --clean
-        '''
+                '''
             }
         }
 
